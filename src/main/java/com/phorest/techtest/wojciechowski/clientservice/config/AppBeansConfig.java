@@ -1,5 +1,6 @@
 package com.phorest.techtest.wojciechowski.clientservice.config;
 
+import com.phorest.techtest.wojciechowski.clientservice.dao.AppointmentRepository;
 import com.phorest.techtest.wojciechowski.clientservice.dao.CustomerRepository;
 import com.phorest.techtest.wojciechowski.clientservice.dao.EntityRepository;
 import com.phorest.techtest.wojciechowski.clientservice.service.EntityService;
@@ -70,14 +71,19 @@ public class AppBeansConfig {
 //        return dataSource;
 //    }
 
+//    @Bean
+//    JdbcTemplate jdbcTemplate(DataSource dataSource) {
+//        return new JdbcTemplate(dataSource);
+//    }
+
     @Bean
-    JdbcTemplate jdbcTemplate(DataSource dataSource) {
-        return new JdbcTemplate(dataSource);
+    public CustomerRepository customerRepository(JdbcTemplate jdbcTemplate, EntityRepository<Appointment, String> appointmentRepository) {
+        return new CustomerRepository(jdbcTemplate, appointmentRepository);
     }
 
     @Bean
-    public EntityRepository<Customer, String> customerRepository(JdbcTemplate jdbcTemplate) {
-        return new CustomerRepository(jdbcTemplate);
+    public AppointmentRepository appointmentRepository(JdbcTemplate jdbcTemplate) {
+        return new AppointmentRepository(jdbcTemplate);
     }
 
     @Bean

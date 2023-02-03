@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +29,7 @@ public abstract class EntityRepositoryImpl<T, K> implements EntityRepository<T, 
     }
 
     @Override
+    @Transactional
     public void save(T entity) {
         K key = getKey(entity);
         Object[] values = getInsertValues(entity);
@@ -37,11 +39,13 @@ public abstract class EntityRepositoryImpl<T, K> implements EntityRepository<T, 
     }
 
     @Override
+    @Transactional
     public void save(Collection<T> enitities) {
         enitities.forEach(this::save);
     }
 
     @Override
+    @Transactional
     public void update(T entity) {
         K key = getKey(entity);
         Collection<ImmutablePair<String, Object>> values = getColumnUpdates(entity);

@@ -1,10 +1,12 @@
 package com.phorest.techtest.wojciechowski.clientservice.dao;
 
 
+import com.phorest.techtest.wojciechowski.clientservice.service.model.Appointment;
 import com.phorest.techtest.wojciechowski.clientservice.service.model.Customer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,8 +19,11 @@ public class CustomerRepository extends EntityRepositoryImpl<Customer, String> {
     public static final String ID = "id";
     //TODO define more columns
 
-    public CustomerRepository(JdbcTemplate jdbcTemplate) {
+    private final EntityRepository<Appointment, String> appointmentRepository;
+
+    public CustomerRepository(JdbcTemplate jdbcTemplate, EntityRepository<Appointment, String> appointmentRepository) {
         super(jdbcTemplate);
+        this.appointmentRepository = appointmentRepository;
     }
 
     @Override
@@ -64,5 +69,12 @@ public class CustomerRepository extends EntityRepositoryImpl<Customer, String> {
             //TODO define more column mappings
             return customer;
         };
+    }
+
+    @Override
+    @Transactional
+    public void save(Customer entity) {
+        super.save(entity);
+        entity.getAppointments().forEach(appointmentRepository::save);
     }
 }
